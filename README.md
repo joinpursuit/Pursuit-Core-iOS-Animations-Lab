@@ -2,6 +2,8 @@
 
 This repo contains a starter project.
 
+![squareMoving](./squareMoving.gif)
+
 Make the following changes to this project:
 
 - Add a `UIStepper` for the animation time.
