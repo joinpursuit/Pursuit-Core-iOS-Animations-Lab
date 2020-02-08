@@ -10,6 +10,15 @@ import UIKit
 
 class ViewController: UIViewController {
     
+    lazy var stepper: UIStepper = {
+        let stepper = UIStepper()
+        stepper.value = 0.0
+        stepper.minimumValue = 0.0
+        stepper.maximumValue = 10.0
+        stepper.addTarget(self, action: #selector(configurStepper(sender:)), for: .valueChanged)
+        return stepper
+    }()
+    
     lazy var blueSquare: UIView = {
         let view = UIView()
         view.backgroundColor = .blue
@@ -43,6 +52,31 @@ class ViewController: UIViewController {
         return button
     }()
     
+    lazy var leftRightButtonStackView: UIStackView = {
+       let buttonStack = UIStackView()
+        buttonStack.axis = .horizontal
+        buttonStack.alignment = .center
+        buttonStack.distribution = .equalSpacing
+        buttonStack.spacing = 30
+        return buttonStack
+    }()
+    
+    lazy var leftButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("Move square left", for: .normal)
+        button.setTitleColor(.black, for: .normal)
+        button.backgroundColor = .systemPink
+        return button
+    }()
+    
+    lazy var rightButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("Move square right", for: .normal)
+        button.setTitleColor(.black, for: .normal)
+        button.backgroundColor = .systemPink
+        return button
+    }()
+    
     lazy var blueSquareHeightConstaint: NSLayoutConstraint = {
         blueSquare.heightAnchor.constraint(equalToConstant: 200)
     }()
@@ -68,7 +102,7 @@ class ViewController: UIViewController {
     @IBAction func animateSquareUp(sender: UIButton) {
         let oldOffset = blueSquareCenterYConstraint.constant
         blueSquareCenterYConstraint.constant = oldOffset - 150
-        UIView.animate(withDuration: 2) { [unowned self] in
+        UIView.animate(withDuration: stepper.value) { [unowned self] in
             self.view.layoutIfNeeded()
         }
     }
@@ -76,20 +110,33 @@ class ViewController: UIViewController {
     @IBAction func animateSquareDown(sender: UIButton) {
         let oldOffet = blueSquareCenterYConstraint.constant
         blueSquareCenterYConstraint.constant = oldOffet + 150
-        UIView.animate(withDuration: 2) { [unowned self] in
+        UIView.animate(withDuration: stepper.value) { [unowned self] in
             self.view.layoutIfNeeded()
         }
+    }
+    
+    @IBAction func configurStepper(sender: UIStepper) {
+        print(stepper.value)
+//        let stepperNumber = sender.value
+//            UIView.animate(withDuration: stepperNumber) { [unowned self] in
+//            self.view.layoutIfNeeded()
+//        }
+        //stepperLabel.text = stepperNumber.description
     }
     
     private func addSubviews() {
         view.addSubview(blueSquare)
         addStackViewSubviews()
         view.addSubview(buttonStackView)
+        view.addSubview(stepper)
+        view.addSubview(leftRightButtonStackView)
     }
     
     private func addStackViewSubviews() {
         buttonStackView.addSubview(upButton)
         buttonStackView.addSubview(downButton)
+        leftRightButtonStackView.addSubview(leftButton)
+        leftRightButtonStackView.addSubview(rightButton)
     }
     
     private func configureConstraints() {
@@ -97,6 +144,7 @@ class ViewController: UIViewController {
         constrainUpButton()
         constrainDownButton()
         constrainButtonStackView()
+        constraintStepper()
     }
     
     private func constrainUpButton() {
@@ -127,6 +175,14 @@ class ViewController: UIViewController {
             buttonStackView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -100),
             buttonStackView.heightAnchor.constraint(equalToConstant: 50),
             buttonStackView.widthAnchor.constraint(equalTo: view.widthAnchor),
+        ])
+    }
+    
+    private func constraintStepper() {
+        stepper.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            stepper.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            stepper.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -40)
         ])
     }
 }
