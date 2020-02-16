@@ -28,13 +28,32 @@ class ViewController: UIViewController {
     
     lazy var timeLabel: UILabel = {
         let label = UILabel()
-        label.textAlignment = .center
+        label.textAlignment = .right
         label.numberOfLines = 1
         label.font = UIFont.systemFont(ofSize: 16, weight: .semibold)
         //FIXME: correct value on the label
         //label.text = "Time of Animation"
         return label
     }()
+    
+    lazy var distanceStepper: UIStepper = {
+           let stepper = UIStepper()
+           stepper.minimumValue = 0.0
+           stepper.maximumValue = 500.0
+           stepper.stepValue = 50.0
+           stepper.value = 100.0
+           return stepper
+       }()
+    
+    lazy var distanceLabel: UILabel = {
+          let label = UILabel()
+          label.textAlignment = .right
+          label.numberOfLines = 1
+          label.font = UIFont.systemFont(ofSize: 16, weight: .semibold)
+          //FIXME: correct value on the label
+          //label.text = "Time of Animation"
+          return label
+      }()
     
     lazy var buttonStackView: UIStackView = {
        let buttonStack = UIStackView()
@@ -111,6 +130,7 @@ class ViewController: UIViewController {
         addSubviews()
         configureConstraints()
         timeLabel.text = "Time of Animation \(timeStepper.value)"
+        distanceLabel.text = "Distance to move the square \(distanceStepper.value)"
     }
     
     @IBAction func animateSquareUp(sender: UIButton) {
@@ -151,14 +171,18 @@ class ViewController: UIViewController {
         timeLabel.text = "Time of Animation \(timeStepper.value)"
     }
     
-//    alphaStepperLabel.value = sender.value
-//    alphaValueLabel.text = "Alpha is \(String(format: "%.1f", alphaStepperLabel.value))"
-//    view.backgroundColor = UIColor(red: CGFloat(redSliderLabel.value), green: CGFloat(greenSliderLabel.value), blue: CGFloat(blueSliderLabel.value), alpha: CGFloat(alphaStepperLabel.value))
+    @IBAction func distanceStepperChanged(sender: UIStepper) {
+           distanceStepper.value = sender.value
+           //FIXME: Why cannot change value for label?
+           distanceLabel.text = "Distance to move the square \(distanceStepper.value)"
+       }
     
     private func addSubviews() {
         view.addSubview(blueSquare)
         view.addSubview(timeStepper)
         view.addSubview(timeLabel)
+        view.addSubview(distanceStepper)
+        view.addSubview(distanceLabel)
         addStackViewSubviews()
         view.addSubview(buttonStackView)
         view.addSubview(buttonStackView2)
@@ -173,8 +197,10 @@ class ViewController: UIViewController {
     
     private func configureConstraints() {
         constrainBlueSquare()
-        constrainTimePickerView()
+        constrainTimeStepper()
         constrainTimeLabel()
+        constrainDistanceLabel()
+        constrainDistanceStepper()
         constrainUpButton()
         constrainDownButton()
         constrainLeftButton()
@@ -183,7 +209,7 @@ class ViewController: UIViewController {
         constrainButtonStackView2()
     }
     
-    private func constrainTimePickerView() {
+    private func constrainTimeStepper() {
        timeStepper.translatesAutoresizingMaskIntoConstraints = false
         
         timeStepper.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
@@ -209,6 +235,33 @@ class ViewController: UIViewController {
         
         timeLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -8).isActive = true
     }
+    
+    private func constrainDistanceLabel() {
+    distanceLabel.translatesAutoresizingMaskIntoConstraints = false
+     
+     distanceLabel.centerXAnchor.constraint(equalTo: distanceStepper.centerXAnchor).isActive = true
+    
+     distanceLabel.topAnchor.constraint(equalTo: upButton.bottomAnchor, constant: 30).isActive = true
+     
+     distanceLabel.heightAnchor.constraint(equalToConstant: 30).isActive = true
+     
+     distanceLabel.leadingAnchor.constraint(equalTo: distanceStepper.trailingAnchor, constant:  20).isActive = true
+     
+     distanceLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -8).isActive = true
+    }
+    
+    private func constrainDistanceStepper() {
+          distanceStepper.translatesAutoresizingMaskIntoConstraints = false
+          
+          distanceStepper.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+          
+          distanceStepper.topAnchor.constraint(equalTo: downButton.bottomAnchor, constant: 30).isActive = true
+          distanceStepper.heightAnchor.constraint(equalToConstant: 30).isActive = true
+             //timeStepper.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+             
+            distanceStepper.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+           
+          }
     
     private func constrainUpButton() {
     upButton.translatesAutoresizingMaskIntoConstraints = false
