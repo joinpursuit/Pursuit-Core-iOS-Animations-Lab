@@ -38,7 +38,7 @@ class ViewController: UIViewController {
     
     lazy var distanceStepper: UIStepper = {
            let stepper = UIStepper()
-           stepper.minimumValue = 0.0
+           stepper.minimumValue = 50.0
            stepper.maximumValue = 500.0
            stepper.stepValue = 50.0
            stepper.value = 100.0
@@ -135,7 +135,7 @@ class ViewController: UIViewController {
     
     @IBAction func animateSquareUp(sender: UIButton) {
         let oldOffset = blueSquareCenterYConstraint.constant
-        blueSquareCenterYConstraint.constant = oldOffset - 150
+        blueSquareCenterYConstraint.constant = oldOffset - CGFloat(distanceStepper.value)
         UIView.animate(withDuration: timeStepper.value) { [unowned self] in
             self.view.layoutIfNeeded()
         }
@@ -143,7 +143,7 @@ class ViewController: UIViewController {
     
     @IBAction func animateSquareDown(sender: UIButton) {
         let oldOffet = blueSquareCenterYConstraint.constant
-        blueSquareCenterYConstraint.constant = oldOffet + 150
+        blueSquareCenterYConstraint.constant = oldOffet + CGFloat(distanceStepper.value)
         UIView.animate(withDuration: timeStepper.value) { [unowned self] in
             self.view.layoutIfNeeded()
         }
@@ -151,7 +151,7 @@ class ViewController: UIViewController {
     
     @IBAction func animateSquareLeft(sender: UIButton) {
         let oldOffet = blueSquareCenterXConstraint.constant
-        blueSquareCenterXConstraint.constant = oldOffet - 100
+        blueSquareCenterXConstraint.constant = oldOffet - CGFloat(distanceStepper.value)
         UIView.animate(withDuration: timeStepper.value) { [unowned self] in
             self.view.layoutIfNeeded()
         }
@@ -159,7 +159,7 @@ class ViewController: UIViewController {
     
     @IBAction func animateSquareRight(sender: UIButton) {
         let oldOffet = blueSquareCenterXConstraint.constant
-        blueSquareCenterXConstraint.constant = oldOffet + 100
+        blueSquareCenterXConstraint.constant = oldOffet + CGFloat(distanceStepper.value)
         UIView.animate(withDuration: timeStepper.value) { [unowned self] in
             self.view.layoutIfNeeded()
         }
