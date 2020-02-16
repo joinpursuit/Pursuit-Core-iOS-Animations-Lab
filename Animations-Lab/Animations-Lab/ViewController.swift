@@ -24,7 +24,7 @@ class ViewController: UIViewController {
     }()
     
     lazy var timeStepper: UIStepper = {
-        let stepper = UIStepper()
+        var stepper = UIStepper()
         stepper.minimumValue = 0.0
         stepper.maximumValue = 5.0
         stepper.stepValue = 1.0
@@ -33,36 +33,36 @@ class ViewController: UIViewController {
     }()
     
     lazy var timeLabel: UILabel = {
-        let label = UILabel()
+        var label = UILabel()
         label.textAlignment = .right
         label.numberOfLines = 1
         label.font = UIFont.systemFont(ofSize: 16, weight: .semibold)
         //FIXME: correct value on the label
-        //label.text = "Time of Animation"
+        label.text = "Time of Animation"
         return label
     }()
     
     lazy var distanceStepper: UIStepper = {
-           let stepper = UIStepper()
-           stepper.minimumValue = 50.0
-           stepper.maximumValue = 500.0
-           stepper.stepValue = 50.0
-           stepper.value = 100.0
-           return stepper
-       }()
+        var stepper = UIStepper()
+        stepper.minimumValue = 50.0
+        stepper.maximumValue = 500.0
+        stepper.stepValue = 50.0
+        stepper.value = 100.0
+        return stepper
+    }()
     
     lazy var distanceLabel: UILabel = {
-          let label = UILabel()
-          label.textAlignment = .right
-          label.numberOfLines = 1
-          label.font = UIFont.systemFont(ofSize: 16, weight: .semibold)
-          //FIXME: correct value on the label
-          //label.text = "Time of Animation"
-          return label
-      }()
+        var label = UILabel()
+        label.textAlignment = .right
+        label.numberOfLines = 1
+        label.font = UIFont.systemFont(ofSize: 16, weight: .semibold)
+        //FIXME: correct value on the label
+        label.text = "Distance to move the square"
+        return label
+    }()
     
     lazy var buttonStackView: UIStackView = {
-       let buttonStack = UIStackView()
+        let buttonStack = UIStackView()
         buttonStack.axis = .horizontal
         buttonStack.alignment = .center
         buttonStack.distribution = .equalSpacing
@@ -71,7 +71,7 @@ class ViewController: UIViewController {
     }()
     
     lazy var upButton: UIButton = {
-       let button = UIButton()
+        let button = UIButton()
         button.setTitle("Move square up", for: .normal)
         button.setTitleColor(.black, for: .normal)
         button.backgroundColor = .cyan
@@ -80,7 +80,7 @@ class ViewController: UIViewController {
     }()
     
     lazy var downButton: UIButton = {
-       let button = UIButton()
+        let button = UIButton()
         button.setTitle("Move square down", for: .normal)
         button.setTitleColor(.black, for: .normal)
         button.backgroundColor = .cyan
@@ -89,16 +89,16 @@ class ViewController: UIViewController {
     }()
     
     lazy var buttonStackView2: UIStackView = {
-         let buttonStack = UIStackView()
-          buttonStack.axis = .horizontal
-          buttonStack.alignment = .center
-          buttonStack.distribution = .equalSpacing
-          buttonStack.spacing = 30
-          return buttonStack
-      }()
+        let buttonStack = UIStackView()
+        buttonStack.axis = .horizontal
+        buttonStack.alignment = .center
+        buttonStack.distribution = .equalSpacing
+        buttonStack.spacing = 30
+        return buttonStack
+    }()
     
     lazy var leftButton: UIButton = {
-       let button = UIButton()
+        let button = UIButton()
         button.setTitle("Move square left", for: .normal)
         button.setTitleColor(.black, for: .normal)
         button.backgroundColor = .red
@@ -107,13 +107,13 @@ class ViewController: UIViewController {
     }()
     
     lazy var rightButton: UIButton = {
-          let button = UIButton()
-           button.setTitle("Move square right", for: .normal)
-           button.setTitleColor(.black, for: .normal)
-           button.backgroundColor = .red
-           button.addTarget(self, action: #selector(animateSquareRight(sender:)), for: .touchUpInside)
-           return button
-       }()
+        let button = UIButton()
+        button.setTitle("Move square right", for: .normal)
+        button.setTitleColor(.black, for: .normal)
+        button.backgroundColor = .red
+        button.addTarget(self, action: #selector(animateSquareRight(sender:)), for: .touchUpInside)
+        return button
+    }()
     
     lazy var blueSquareHeightConstaint: NSLayoutConstraint = {
         blueSquare.heightAnchor.constraint(equalToConstant: 200)
@@ -135,8 +135,6 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         addSubviews()
         configureConstraints()
-        timeLabel.text = "Time of Animation \(timeStepper.value)"
-        distanceLabel.text = "Distance to move the square \(distanceStepper.value)"
     }
     
     @IBAction func pickerHasChanged(sender: UIPickerView) {
@@ -182,10 +180,10 @@ class ViewController: UIViewController {
     }
     
     @IBAction func distanceStepperChanged(sender: UIStepper) {
-           distanceStepper.value = sender.value
-           //FIXME: Why cannot change value for label?
-           distanceLabel.text = "Distance to move the square \(distanceStepper.value)"
-       }
+        distanceStepper.value = sender.value
+        //FIXME: Why cannot change value for label?
+        distanceLabel.text = "Distance to move the square \(distanceStepper.value)"
+    }
     
     private func addSubviews() {
         view.addSubview(blueSquare)
@@ -232,23 +230,23 @@ class ViewController: UIViewController {
     }
     
     private func constrainTimeStepper() {
-       timeStepper.translatesAutoresizingMaskIntoConstraints = false
+        timeStepper.translatesAutoresizingMaskIntoConstraints = false
         
         timeStepper.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         
         timeStepper.bottomAnchor.constraint(equalTo: leftButton.topAnchor, constant: -30).isActive = true
         timeStepper.heightAnchor.constraint(equalToConstant: 30).isActive = true
-           //timeStepper.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-           
-          timeStepper.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        //timeStepper.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         
-       }
+        timeStepper.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        
+    }
     
     private func constrainTimeLabel() {
         timeLabel.translatesAutoresizingMaskIntoConstraints = false
         
         timeLabel.centerXAnchor.constraint(equalTo: timeStepper.centerXAnchor).isActive = true
-       
+        
         timeLabel.bottomAnchor.constraint(equalTo: rightButton.topAnchor, constant: -30).isActive = true
         
         timeLabel.heightAnchor.constraint(equalToConstant: 30).isActive = true
@@ -259,34 +257,34 @@ class ViewController: UIViewController {
     }
     
     private func constrainDistanceLabel() {
-    distanceLabel.translatesAutoresizingMaskIntoConstraints = false
-     
-     distanceLabel.centerXAnchor.constraint(equalTo: distanceStepper.centerXAnchor).isActive = true
-    
-     distanceLabel.topAnchor.constraint(equalTo: upButton.bottomAnchor, constant: 30).isActive = true
-     
-     distanceLabel.heightAnchor.constraint(equalToConstant: 30).isActive = true
-     
-     distanceLabel.leadingAnchor.constraint(equalTo: distanceStepper.trailingAnchor, constant:  20).isActive = true
-     
-     distanceLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -8).isActive = true
+        distanceLabel.translatesAutoresizingMaskIntoConstraints = false
+        
+        distanceLabel.centerXAnchor.constraint(equalTo: distanceStepper.centerXAnchor).isActive = true
+        
+        distanceLabel.topAnchor.constraint(equalTo: upButton.bottomAnchor, constant: 30).isActive = true
+        
+        distanceLabel.heightAnchor.constraint(equalToConstant: 30).isActive = true
+        
+        distanceLabel.leadingAnchor.constraint(equalTo: distanceStepper.trailingAnchor, constant:  20).isActive = true
+        
+        distanceLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -8).isActive = true
     }
     
     private func constrainDistanceStepper() {
-          distanceStepper.translatesAutoresizingMaskIntoConstraints = false
-          
-          distanceStepper.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-          
-          distanceStepper.topAnchor.constraint(equalTo: downButton.bottomAnchor, constant: 30).isActive = true
-          distanceStepper.heightAnchor.constraint(equalToConstant: 30).isActive = true
-             //timeStepper.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-             
-            distanceStepper.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
-           
-          }
+        distanceStepper.translatesAutoresizingMaskIntoConstraints = false
+        
+        distanceStepper.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        
+        distanceStepper.topAnchor.constraint(equalTo: downButton.bottomAnchor, constant: 30).isActive = true
+        distanceStepper.heightAnchor.constraint(equalToConstant: 30).isActive = true
+        //timeStepper.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+        
+        distanceStepper.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        
+    }
     
     private func constrainUpButton() {
-    upButton.translatesAutoresizingMaskIntoConstraints = false
+        upButton.translatesAutoresizingMaskIntoConstraints = false
         upButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
         upButton.trailingAnchor.constraint(equalTo: buttonStackView.trailingAnchor).isActive = true
         
@@ -299,19 +297,19 @@ class ViewController: UIViewController {
     }
     
     private func constrainRightButton() {
-       rightButton.translatesAutoresizingMaskIntoConstraints = false
-           rightButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
-           rightButton.trailingAnchor.constraint(equalTo: buttonStackView.trailingAnchor).isActive = true
-       }
+        rightButton.translatesAutoresizingMaskIntoConstraints = false
+        rightButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        rightButton.trailingAnchor.constraint(equalTo: buttonStackView.trailingAnchor).isActive = true
+    }
     
     private func constrainLeftButton() {
-           leftButton.translatesAutoresizingMaskIntoConstraints = false
-           leftButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        leftButton.translatesAutoresizingMaskIntoConstraints = false
+        leftButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
         
         leftButton.trailingAnchor.constraint(equalTo: downButton.trailingAnchor).isActive = true
         
         leftButton.leadingAnchor.constraint(equalTo: buttonStackView2.leadingAnchor).isActive = true
-       }
+    }
     
     private func constrainBlueSquare() {
         blueSquare.translatesAutoresizingMaskIntoConstraints = false
