@@ -17,6 +17,12 @@ class ViewController: UIViewController {
         return view
     }()
     
+    lazy var pickerView: UIPickerView = {
+        let picker = UIPickerView()
+        
+        return picker
+    }()
+    
     lazy var timeStepper: UIStepper = {
         let stepper = UIStepper()
         stepper.minimumValue = 0.0
@@ -133,6 +139,10 @@ class ViewController: UIViewController {
         distanceLabel.text = "Distance to move the square \(distanceStepper.value)"
     }
     
+    @IBAction func pickerHasChanged(sender: UIPickerView) {
+        
+    }
+    
     @IBAction func animateSquareUp(sender: UIButton) {
         let oldOffset = blueSquareCenterYConstraint.constant
         blueSquareCenterYConstraint.constant = oldOffset - CGFloat(distanceStepper.value)
@@ -179,6 +189,7 @@ class ViewController: UIViewController {
     
     private func addSubviews() {
         view.addSubview(blueSquare)
+        view.addSubview(pickerView)
         view.addSubview(timeStepper)
         view.addSubview(timeLabel)
         view.addSubview(distanceStepper)
@@ -196,6 +207,7 @@ class ViewController: UIViewController {
     }
     
     private func configureConstraints() {
+        constrainPickerView()
         constrainBlueSquare()
         constrainTimeStepper()
         constrainTimeLabel()
@@ -209,12 +221,22 @@ class ViewController: UIViewController {
         constrainButtonStackView2()
     }
     
+    private func constrainPickerView() {
+        pickerView.translatesAutoresizingMaskIntoConstraints = false
+        
+        pickerView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        pickerView.topAnchor.constraint(equalTo: view.topAnchor, constant: 8).isActive = true
+        pickerView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 30).isActive = true
+        pickerView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -30).isActive = true
+        pickerView.heightAnchor.constraint(equalToConstant: 200).isActive = true
+    }
+    
     private func constrainTimeStepper() {
        timeStepper.translatesAutoresizingMaskIntoConstraints = false
         
         timeStepper.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         
-        timeStepper.topAnchor.constraint(equalTo: blueSquare.bottomAnchor, constant: 30).isActive = true
+        timeStepper.bottomAnchor.constraint(equalTo: leftButton.topAnchor, constant: -30).isActive = true
         timeStepper.heightAnchor.constraint(equalToConstant: 30).isActive = true
            //timeStepper.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
            
@@ -227,7 +249,7 @@ class ViewController: UIViewController {
         
         timeLabel.centerXAnchor.constraint(equalTo: timeStepper.centerXAnchor).isActive = true
        
-        timeLabel.topAnchor.constraint(equalTo: blueSquare.bottomAnchor, constant: 30).isActive = true
+        timeLabel.bottomAnchor.constraint(equalTo: rightButton.topAnchor, constant: -30).isActive = true
         
         timeLabel.heightAnchor.constraint(equalToConstant: 30).isActive = true
         
@@ -288,7 +310,7 @@ class ViewController: UIViewController {
         
         leftButton.trailingAnchor.constraint(equalTo: downButton.trailingAnchor).isActive = true
         
-        leftButton.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        leftButton.leadingAnchor.constraint(equalTo: buttonStackView2.leadingAnchor).isActive = true
        }
     
     private func constrainBlueSquare() {
@@ -315,7 +337,7 @@ class ViewController: UIViewController {
         buttonStackView2.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             buttonStackView2.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            buttonStackView2.bottomAnchor.constraint(equalTo: buttonStackView.topAnchor, constant: -50),
+            buttonStackView2.bottomAnchor.constraint(equalTo: buttonStackView.topAnchor, constant: -30),
             buttonStackView2.heightAnchor.constraint(equalToConstant: 50),
             buttonStackView2.widthAnchor.constraint(equalTo: view.widthAnchor),
         ])
