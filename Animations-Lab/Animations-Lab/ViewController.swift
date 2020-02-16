@@ -17,6 +17,25 @@ class ViewController: UIViewController {
         return view
     }()
     
+    lazy var timeStepper: UIStepper = {
+        let stepper = UIStepper()
+        stepper.minimumValue = 0.0
+        stepper.maximumValue = 5.0
+        stepper.stepValue = 1.0
+        stepper.value = 2.0
+        return stepper
+    }()
+    
+    lazy var timeLabel: UILabel = {
+        let label = UILabel()
+        label.textAlignment = .center
+        label.numberOfLines = 1
+        label.font = UIFont.systemFont(ofSize: 16, weight: .semibold)
+        //FIXME: correct value on the label
+        //label.text = "Time of Animation"
+        return label
+    }()
+    
     lazy var buttonStackView: UIStackView = {
        let buttonStack = UIStackView()
         buttonStack.axis = .horizontal
@@ -91,12 +110,13 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         addSubviews()
         configureConstraints()
+        timeLabel.text = "Time of Animation \(timeStepper.value)"
     }
     
     @IBAction func animateSquareUp(sender: UIButton) {
         let oldOffset = blueSquareCenterYConstraint.constant
         blueSquareCenterYConstraint.constant = oldOffset - 150
-        UIView.animate(withDuration: 2) { [unowned self] in
+        UIView.animate(withDuration: timeStepper.value) { [unowned self] in
             self.view.layoutIfNeeded()
         }
     }
@@ -104,7 +124,7 @@ class ViewController: UIViewController {
     @IBAction func animateSquareDown(sender: UIButton) {
         let oldOffet = blueSquareCenterYConstraint.constant
         blueSquareCenterYConstraint.constant = oldOffet + 150
-        UIView.animate(withDuration: 2) { [unowned self] in
+        UIView.animate(withDuration: timeStepper.value) { [unowned self] in
             self.view.layoutIfNeeded()
         }
     }
@@ -112,7 +132,7 @@ class ViewController: UIViewController {
     @IBAction func animateSquareLeft(sender: UIButton) {
         let oldOffet = blueSquareCenterXConstraint.constant
         blueSquareCenterXConstraint.constant = oldOffet - 100
-        UIView.animate(withDuration: 2) { [unowned self] in
+        UIView.animate(withDuration: timeStepper.value) { [unowned self] in
             self.view.layoutIfNeeded()
         }
     }
@@ -120,13 +140,25 @@ class ViewController: UIViewController {
     @IBAction func animateSquareRight(sender: UIButton) {
         let oldOffet = blueSquareCenterXConstraint.constant
         blueSquareCenterXConstraint.constant = oldOffet + 100
-        UIView.animate(withDuration: 2) { [unowned self] in
+        UIView.animate(withDuration: timeStepper.value) { [unowned self] in
             self.view.layoutIfNeeded()
         }
     }
     
+    @IBAction func timeStepperChanged(sender: UIStepper) {
+        timeStepper.value = sender.value
+        //FIXME: Why cannot change value for label?
+        timeLabel.text = "Time of Animation \(timeStepper.value)"
+    }
+    
+//    alphaStepperLabel.value = sender.value
+//    alphaValueLabel.text = "Alpha is \(String(format: "%.1f", alphaStepperLabel.value))"
+//    view.backgroundColor = UIColor(red: CGFloat(redSliderLabel.value), green: CGFloat(greenSliderLabel.value), blue: CGFloat(blueSliderLabel.value), alpha: CGFloat(alphaStepperLabel.value))
+    
     private func addSubviews() {
         view.addSubview(blueSquare)
+        view.addSubview(timeStepper)
+        view.addSubview(timeLabel)
         addStackViewSubviews()
         view.addSubview(buttonStackView)
         view.addSubview(buttonStackView2)
@@ -141,12 +173,41 @@ class ViewController: UIViewController {
     
     private func configureConstraints() {
         constrainBlueSquare()
+        constrainTimePickerView()
+        constrainTimeLabel()
         constrainUpButton()
         constrainDownButton()
         constrainLeftButton()
         constrainRightButton()
         constrainButtonStackView()
         constrainButtonStackView2()
+    }
+    
+    private func constrainTimePickerView() {
+       timeStepper.translatesAutoresizingMaskIntoConstraints = false
+        
+        timeStepper.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        
+        timeStepper.topAnchor.constraint(equalTo: blueSquare.bottomAnchor, constant: 30).isActive = true
+        timeStepper.heightAnchor.constraint(equalToConstant: 30).isActive = true
+           //timeStepper.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+           
+          timeStepper.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        
+       }
+    
+    private func constrainTimeLabel() {
+        timeLabel.translatesAutoresizingMaskIntoConstraints = false
+        
+        timeLabel.centerXAnchor.constraint(equalTo: timeStepper.centerXAnchor).isActive = true
+       
+        timeLabel.topAnchor.constraint(equalTo: blueSquare.bottomAnchor, constant: 30).isActive = true
+        
+        timeLabel.heightAnchor.constraint(equalToConstant: 30).isActive = true
+        
+        timeLabel.leadingAnchor.constraint(equalTo: timeStepper.trailingAnchor, constant:  20).isActive = true
+        
+        timeLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -8).isActive = true
     }
     
     private func constrainUpButton() {
@@ -176,9 +237,6 @@ class ViewController: UIViewController {
         
         leftButton.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
        }
-    
-    
-    
     
     private func constrainBlueSquare() {
         blueSquare.translatesAutoresizingMaskIntoConstraints = false
