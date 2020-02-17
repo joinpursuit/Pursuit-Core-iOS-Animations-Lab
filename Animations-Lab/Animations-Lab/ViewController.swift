@@ -17,9 +17,11 @@ class ViewController: UIViewController {
         return view
     }()
     
+    let dataForPicker = ["","","","",""]
+    
     lazy var pickerView: UIPickerView = {
         let picker = UIPickerView()
-        
+        picker.center = self.view.center
         return picker
     }()
     
@@ -135,6 +137,9 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         addSubviews()
         configureConstraints()
+        
+        pickerView.dataSource = self
+        //pickerView.delegate = self
     }
     
     @IBAction func pickerHasChanged(sender: UIPickerView) {
@@ -341,5 +346,19 @@ class ViewController: UIViewController {
         ])
     }
 }
+
+extension ViewController: UIPickerViewDataSource {
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return dataForPicker.count
+    }
+    
+    
+}
+
+
 
 
