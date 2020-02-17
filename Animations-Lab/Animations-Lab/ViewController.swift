@@ -17,7 +17,7 @@ class ViewController: UIViewController {
         return view
     }()
     
-    var dataForPicker = ["curveEaseInOut","curveEaseIn","curveEaseOut","transitionFlipFromLeft","transitionFlipFromRight"]
+    var dataForPicker = ["transitionCurlUp","transitionCurlDown","curveEaseOut","transitionFlipFromLeft","transitionFlipFromRight"]
     
     lazy var pickerView: UIPickerView = {
         let picker = UIPickerView()
@@ -143,16 +143,16 @@ class ViewController: UIViewController {
         pickerView.dataSource = self
         pickerView.delegate = self
         
-//        animator = UIViewPropertyAnimator(duration: 2.0, curve: .easeInOut, animations: {
-//                   // here will create the animation
-//                   // TODO: perform a transform (scale) -> Done!
-//                   self.blueSquare.transform = CGAffineTransform(scaleX: 2, y: 1)
-//               })
+        //        animator = UIViewPropertyAnimator(duration: 2.0, curve: .easeInOut, animations: {
+        //                   // here will create the animation
+        //                   // TODO: perform a transform (scale) -> Done!
+        //                   self.blueSquare.transform = CGAffineTransform(scaleX: 2, y: 1)
+        //               })
     }
     
-//    @IBAction func pickerHasChanged(sender: UIPickerView) {
-//        animator.fractionComplete = CGFloat(sender.selectedRow(inComponent: 0))
-//    }
+    //    @IBAction func pickerHasChanged(sender: UIPickerView) {
+    //        animator.fractionComplete = CGFloat(sender.selectedRow(inComponent: 0))
+    //    }
     
     @IBAction func animateSquareUp(sender: UIButton) {
         let oldOffset = blueSquareCenterYConstraint.constant
@@ -373,18 +373,49 @@ extension ViewController: UIPickerViewDelegate {
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         if dataForPicker[row] == dataForPicker[0] {
-            UIView.AnimationCurve.easeInOut
+            if blueSquare.backgroundColor == .blue {
+                UIView.transition(with: blueSquare, duration: timeStepper.value, options: [.transitionCurlUp], animations: {
+                    self.blueSquare.backgroundColor = .yellow}, completion: nil)
+            } else {
+                UIView.transition(with: blueSquare, duration: timeStepper.value, options: [.transitionCurlUp], animations: {
+                    self.blueSquare.backgroundColor = .blue}, completion: nil)
+            }
         } else if dataForPicker[row] == dataForPicker[1] {
-            UIView.AnimationCurve.easeIn
+            if blueSquare.backgroundColor == .blue {
+                UIView.transition(with: blueSquare, duration: timeStepper.value, options: [.transitionCurlDown], animations: {
+                    self.blueSquare.backgroundColor = .yellow}, completion: nil)
+            } else {
+                UIView.transition(with: blueSquare, duration: timeStepper.value, options: [.transitionCurlDown], animations: {
+                    self.blueSquare.backgroundColor = .blue}, completion: nil)
+            }
         } else if dataForPicker[row] == dataForPicker[2] {
-            UIView.AnimationCurve.easeOut
+            if blueSquare.backgroundColor == .blue {
+                UIView.transition(with: blueSquare, duration: timeStepper.value, options: [.curveEaseOut], animations: {
+                    self.blueSquare.backgroundColor = .yellow}, completion: nil)
+            } else {
+                UIView.transition(with: blueSquare, duration: timeStepper.value, options: [.curveEaseOut], animations: {
+                    self.blueSquare.backgroundColor = .blue}, completion: nil)
+            }
         } else if dataForPicker[row] == dataForPicker[3] {
-        UIView.AnimationOptions.transitionFlipFromLeft
+            if blueSquare.backgroundColor == .blue {
+                UIView.transition(with: blueSquare, duration: timeStepper.value, options: [.transitionFlipFromLeft], animations: {
+                    self.blueSquare.backgroundColor = .yellow}, completion: nil)
+            } else {
+                UIView.transition(with: blueSquare, duration: timeStepper.value, options: [.transitionFlipFromLeft], animations: {
+                    self.blueSquare.backgroundColor = .blue}, completion: nil)
+            }
         } else if dataForPicker[row] == dataForPicker[4] {
-        UIView.AnimationOptions.transitionFlipFromRight
+            if blueSquare.backgroundColor == .blue {
+                UIView.transition(with: blueSquare, duration: timeStepper.value, options: [.transitionFlipFromRight], animations: {
+                    self.blueSquare.backgroundColor = .yellow}, completion: nil)
+            } else {
+                UIView.transition(with: blueSquare, duration: timeStepper.value, options: [.transitionFlipFromRight], animations: {
+                    self.blueSquare.backgroundColor = .blue}, completion: nil)
+            }
         }
     }
 }
+
 
 
 
