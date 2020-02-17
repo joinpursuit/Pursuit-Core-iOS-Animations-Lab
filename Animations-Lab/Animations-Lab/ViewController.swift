@@ -8,6 +8,7 @@
 
 import UIKit
 
+
 class ViewController: UIViewController {
     
     lazy var blueSquare: UIView = {
@@ -16,8 +17,56 @@ class ViewController: UIViewController {
         return view
     }()
     
+    var dataForPicker = ["transitionCurlUp","transitionCurlDown","curveEaseOut","transitionFlipFromLeft","transitionFlipFromRight"]
+    
+    lazy var pickerView: UIPickerView = {
+        let picker = UIPickerView()
+        picker.center = self.view.center
+        return picker
+    }()
+    
+    private var animator: UIViewPropertyAnimator!
+    
+    lazy var timeStepper: UIStepper = {
+        var stepper = UIStepper()
+        stepper.minimumValue = 0.0
+        stepper.maximumValue = 5.0
+        stepper.stepValue = 1.0
+        stepper.value = 2.0
+        return stepper
+    }()
+    
+    lazy var timeLabel: UILabel = {
+        var label = UILabel()
+        label.textAlignment = .right
+        label.numberOfLines = 1
+        label.font = UIFont.systemFont(ofSize: 16, weight: .semibold)
+        //FIXME: correct value on the label
+        label.text = "Time of Animation"
+        return label
+    }()
+    
+    lazy var distanceStepper: UIStepper = {
+        var stepper = UIStepper()
+        stepper.minimumValue = 50.0
+        stepper.maximumValue = 500.0
+        stepper.stepValue = 50.0
+        stepper.value = 100.0
+        return stepper
+    }()
+    
+    lazy var distanceLabel: UILabel = {
+        var label = UILabel()
+        label.textAlignment = .right
+        label.numberOfLines = 1
+        label.font = UIFont.systemFont(ofSize: 16, weight: .semibold)
+        //FIXME: correct value on the label
+        label.text = "Distance to move the square"
+        return label
+    }()
+    
     lazy var buttonStackView: UIStackView = {
-       let buttonStack = UIStackView()
+        let buttonStack = UIStackView()
         buttonStack.axis = .horizontal
         buttonStack.alignment = .center
         buttonStack.distribution = .equalSpacing
@@ -26,7 +75,7 @@ class ViewController: UIViewController {
     }()
     
     lazy var upButton: UIButton = {
-       let button = UIButton()
+        let button = UIButton()
         button.setTitle("Move square up", for: .normal)
         button.setTitleColor(.black, for: .normal)
         button.backgroundColor = .cyan
@@ -35,11 +84,38 @@ class ViewController: UIViewController {
     }()
     
     lazy var downButton: UIButton = {
-       let button = UIButton()
+        let button = UIButton()
         button.setTitle("Move square down", for: .normal)
         button.setTitleColor(.black, for: .normal)
         button.backgroundColor = .cyan
         button.addTarget(self, action: #selector(animateSquareDown(sender:)), for: .touchUpInside)
+        return button
+    }()
+    
+    lazy var buttonStackView2: UIStackView = {
+        let buttonStack = UIStackView()
+        buttonStack.axis = .horizontal
+        buttonStack.alignment = .center
+        buttonStack.distribution = .equalSpacing
+        buttonStack.spacing = 30
+        return buttonStack
+    }()
+    
+    lazy var leftButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("Move square left", for: .normal)
+        button.setTitleColor(.black, for: .normal)
+        button.backgroundColor = .red
+        button.addTarget(self, action: #selector(animateSquareLeft(sender:)), for: .touchUpInside)
+        return button
+    }()
+    
+    lazy var rightButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("Move square right", for: .normal)
+        button.setTitleColor(.black, for: .normal)
+        button.backgroundColor = .red
+        button.addTarget(self, action: #selector(animateSquareRight(sender:)), for: .touchUpInside)
         return button
     }()
     
@@ -63,51 +139,189 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         addSubviews()
         configureConstraints()
+        
+        pickerView.dataSource = self
+        pickerView.delegate = self
+        
+        //        animator = UIViewPropertyAnimator(duration: 2.0, curve: .easeInOut, animations: {
+        //                   // here will create the animation
+        //                   // TODO: perform a transform (scale) -> Done!
+        //                   self.blueSquare.transform = CGAffineTransform(scaleX: 2, y: 1)
+        //               })
     }
+    
+    //    @IBAction func pickerHasChanged(sender: UIPickerView) {
+    //        animator.fractionComplete = CGFloat(sender.selectedRow(inComponent: 0))
+    //    }
     
     @IBAction func animateSquareUp(sender: UIButton) {
         let oldOffset = blueSquareCenterYConstraint.constant
-        blueSquareCenterYConstraint.constant = oldOffset - 150
-        UIView.animate(withDuration: 2) { [unowned self] in
+        blueSquareCenterYConstraint.constant = oldOffset - CGFloat(distanceStepper.value)
+        UIView.animate(withDuration: timeStepper.value) { [unowned self] in
             self.view.layoutIfNeeded()
         }
     }
     
     @IBAction func animateSquareDown(sender: UIButton) {
         let oldOffet = blueSquareCenterYConstraint.constant
-        blueSquareCenterYConstraint.constant = oldOffet + 150
-        UIView.animate(withDuration: 2) { [unowned self] in
+        blueSquareCenterYConstraint.constant = oldOffet + CGFloat(distanceStepper.value)
+        UIView.animate(withDuration: timeStepper.value) { [unowned self] in
             self.view.layoutIfNeeded()
         }
     }
     
+    @IBAction func animateSquareLeft(sender: UIButton) {
+        let oldOffet = blueSquareCenterXConstraint.constant
+        blueSquareCenterXConstraint.constant = oldOffet - CGFloat(distanceStepper.value)
+        UIView.animate(withDuration: timeStepper.value) { [unowned self] in
+            self.view.layoutIfNeeded()
+        }
+    }
+    
+    @IBAction func animateSquareRight(sender: UIButton) {
+        let oldOffet = blueSquareCenterXConstraint.constant
+        blueSquareCenterXConstraint.constant = oldOffet + CGFloat(distanceStepper.value)
+        UIView.animate(withDuration: timeStepper.value) { [unowned self] in
+            self.view.layoutIfNeeded()
+        }
+    }
+    
+    @IBAction func timeStepperChanged(sender: UIStepper) {
+        timeStepper.value = sender.value
+        //FIXME: Why cannot change value for label?
+        timeLabel.text = "Time of Animation \(timeStepper.value)"
+    }
+    
+    @IBAction func distanceStepperChanged(sender: UIStepper) {
+        distanceStepper.value = sender.value
+        //FIXME: Why cannot change value for label?
+        distanceLabel.text = "Distance to move the square \(distanceStepper.value)"
+    }
+    
     private func addSubviews() {
         view.addSubview(blueSquare)
+        view.addSubview(pickerView)
+        view.addSubview(timeStepper)
+        view.addSubview(timeLabel)
+        view.addSubview(distanceStepper)
+        view.addSubview(distanceLabel)
         addStackViewSubviews()
         view.addSubview(buttonStackView)
+        view.addSubview(buttonStackView2)
     }
     
     private func addStackViewSubviews() {
         buttonStackView.addSubview(upButton)
         buttonStackView.addSubview(downButton)
+        buttonStackView2.addSubview(leftButton)
+        buttonStackView2.addSubview(rightButton)
     }
     
     private func configureConstraints() {
+        constrainPickerView()
         constrainBlueSquare()
+        constrainTimeStepper()
+        constrainTimeLabel()
+        constrainDistanceLabel()
+        constrainDistanceStepper()
         constrainUpButton()
         constrainDownButton()
+        constrainLeftButton()
+        constrainRightButton()
         constrainButtonStackView()
+        constrainButtonStackView2()
+    }
+    
+    private func constrainPickerView() {
+        pickerView.translatesAutoresizingMaskIntoConstraints = false
+        
+        pickerView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        pickerView.topAnchor.constraint(equalTo: view.topAnchor, constant: 8).isActive = true
+        pickerView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 30).isActive = true
+        pickerView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -30).isActive = true
+        pickerView.heightAnchor.constraint(equalToConstant: 200).isActive = true
+    }
+    
+    private func constrainTimeStepper() {
+        timeStepper.translatesAutoresizingMaskIntoConstraints = false
+        
+        timeStepper.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        
+        timeStepper.bottomAnchor.constraint(equalTo: leftButton.topAnchor, constant: -30).isActive = true
+        timeStepper.heightAnchor.constraint(equalToConstant: 30).isActive = true
+        //timeStepper.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+        
+        timeStepper.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        
+    }
+    
+    private func constrainTimeLabel() {
+        timeLabel.translatesAutoresizingMaskIntoConstraints = false
+        
+        timeLabel.centerXAnchor.constraint(equalTo: timeStepper.centerXAnchor).isActive = true
+        
+        timeLabel.bottomAnchor.constraint(equalTo: rightButton.topAnchor, constant: -30).isActive = true
+        
+        timeLabel.heightAnchor.constraint(equalToConstant: 30).isActive = true
+        
+        timeLabel.leadingAnchor.constraint(equalTo: timeStepper.trailingAnchor, constant:  20).isActive = true
+        
+        timeLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -8).isActive = true
+    }
+    
+    private func constrainDistanceLabel() {
+        distanceLabel.translatesAutoresizingMaskIntoConstraints = false
+        
+        distanceLabel.centerXAnchor.constraint(equalTo: distanceStepper.centerXAnchor).isActive = true
+        
+        distanceLabel.topAnchor.constraint(equalTo: upButton.bottomAnchor, constant: 30).isActive = true
+        
+        distanceLabel.heightAnchor.constraint(equalToConstant: 30).isActive = true
+        
+        distanceLabel.leadingAnchor.constraint(equalTo: distanceStepper.trailingAnchor, constant:  20).isActive = true
+        
+        distanceLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -8).isActive = true
+    }
+    
+    private func constrainDistanceStepper() {
+        distanceStepper.translatesAutoresizingMaskIntoConstraints = false
+        
+        distanceStepper.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        
+        distanceStepper.topAnchor.constraint(equalTo: downButton.bottomAnchor, constant: 30).isActive = true
+        distanceStepper.heightAnchor.constraint(equalToConstant: 30).isActive = true
+        //timeStepper.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+        
+        distanceStepper.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        
     }
     
     private func constrainUpButton() {
         upButton.translatesAutoresizingMaskIntoConstraints = false
         upButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
         upButton.trailingAnchor.constraint(equalTo: buttonStackView.trailingAnchor).isActive = true
+        
+        upButton.leadingAnchor.constraint(equalTo: rightButton.leadingAnchor).isActive = true
     }
     
     private func constrainDownButton() {
         downButton.translatesAutoresizingMaskIntoConstraints = false
         downButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
+    }
+    
+    private func constrainRightButton() {
+        rightButton.translatesAutoresizingMaskIntoConstraints = false
+        rightButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        rightButton.trailingAnchor.constraint(equalTo: buttonStackView.trailingAnchor).isActive = true
+    }
+    
+    private func constrainLeftButton() {
+        leftButton.translatesAutoresizingMaskIntoConstraints = false
+        leftButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        
+        leftButton.trailingAnchor.constraint(equalTo: downButton.trailingAnchor).isActive = true
+        
+        leftButton.leadingAnchor.constraint(equalTo: buttonStackView2.leadingAnchor).isActive = true
     }
     
     private func constrainBlueSquare() {
@@ -129,6 +343,80 @@ class ViewController: UIViewController {
             buttonStackView.widthAnchor.constraint(equalTo: view.widthAnchor),
         ])
     }
+    
+    private func constrainButtonStackView2() {
+        buttonStackView2.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            buttonStackView2.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            buttonStackView2.bottomAnchor.constraint(equalTo: buttonStackView.topAnchor, constant: -30),
+            buttonStackView2.heightAnchor.constraint(equalToConstant: 50),
+            buttonStackView2.widthAnchor.constraint(equalTo: view.widthAnchor),
+        ])
+    }
 }
+
+extension ViewController: UIPickerViewDataSource {
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return dataForPicker.count
+    }
+}
+
+extension ViewController: UIPickerViewDelegate {
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        let row = dataForPicker[row]
+        return row
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        if dataForPicker[row] == dataForPicker[0] {
+            if blueSquare.backgroundColor == .blue {
+                UIView.transition(with: blueSquare, duration: timeStepper.value, options: [.transitionCurlUp], animations: {
+                    self.blueSquare.backgroundColor = .yellow}, completion: nil)
+            } else {
+                UIView.transition(with: blueSquare, duration: timeStepper.value, options: [.transitionCurlUp], animations: {
+                    self.blueSquare.backgroundColor = .blue}, completion: nil)
+            }
+        } else if dataForPicker[row] == dataForPicker[1] {
+            if blueSquare.backgroundColor == .blue {
+                UIView.transition(with: blueSquare, duration: timeStepper.value, options: [.transitionCurlDown], animations: {
+                    self.blueSquare.backgroundColor = .yellow}, completion: nil)
+            } else {
+                UIView.transition(with: blueSquare, duration: timeStepper.value, options: [.transitionCurlDown], animations: {
+                    self.blueSquare.backgroundColor = .blue}, completion: nil)
+            }
+        } else if dataForPicker[row] == dataForPicker[2] {
+            if blueSquare.backgroundColor == .blue {
+                UIView.transition(with: blueSquare, duration: timeStepper.value, options: [.curveEaseOut], animations: {
+                    self.blueSquare.backgroundColor = .yellow}, completion: nil)
+            } else {
+                UIView.transition(with: blueSquare, duration: timeStepper.value, options: [.curveEaseOut], animations: {
+                    self.blueSquare.backgroundColor = .blue}, completion: nil)
+            }
+        } else if dataForPicker[row] == dataForPicker[3] {
+            if blueSquare.backgroundColor == .blue {
+                UIView.transition(with: blueSquare, duration: timeStepper.value, options: [.transitionFlipFromLeft], animations: {
+                    self.blueSquare.backgroundColor = .yellow}, completion: nil)
+            } else {
+                UIView.transition(with: blueSquare, duration: timeStepper.value, options: [.transitionFlipFromLeft], animations: {
+                    self.blueSquare.backgroundColor = .blue}, completion: nil)
+            }
+        } else if dataForPicker[row] == dataForPicker[4] {
+            if blueSquare.backgroundColor == .blue {
+                UIView.transition(with: blueSquare, duration: timeStepper.value, options: [.transitionFlipFromRight], animations: {
+                    self.blueSquare.backgroundColor = .yellow}, completion: nil)
+            } else {
+                UIView.transition(with: blueSquare, duration: timeStepper.value, options: [.transitionFlipFromRight], animations: {
+                    self.blueSquare.backgroundColor = .blue}, completion: nil)
+            }
+        }
+    }
+}
+
+
+
 
 
