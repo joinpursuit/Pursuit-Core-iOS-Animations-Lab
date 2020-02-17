@@ -17,13 +17,15 @@ class ViewController: UIViewController {
         return view
     }()
     
-    let dataForPicker = ["","","","",""]
+    var dataForPicker = ["curveEaseInOut","curveEaseIn","curveEaseOut","transitionFlipFromLeft","transitionFlipFromRight"]
     
     lazy var pickerView: UIPickerView = {
         let picker = UIPickerView()
         picker.center = self.view.center
         return picker
     }()
+    
+    private var animator: UIViewPropertyAnimator!
     
     lazy var timeStepper: UIStepper = {
         var stepper = UIStepper()
@@ -139,12 +141,18 @@ class ViewController: UIViewController {
         configureConstraints()
         
         pickerView.dataSource = self
-        //pickerView.delegate = self
+        pickerView.delegate = self
+        
+//        animator = UIViewPropertyAnimator(duration: 2.0, curve: .easeInOut, animations: {
+//                   // here will create the animation
+//                   // TODO: perform a transform (scale) -> Done!
+//                   self.blueSquare.transform = CGAffineTransform(scaleX: 2, y: 1)
+//               })
     }
     
-    @IBAction func pickerHasChanged(sender: UIPickerView) {
-        
-    }
+//    @IBAction func pickerHasChanged(sender: UIPickerView) {
+//        animator.fractionComplete = CGFloat(sender.selectedRow(inComponent: 0))
+//    }
     
     @IBAction func animateSquareUp(sender: UIButton) {
         let oldOffset = blueSquareCenterYConstraint.constant
@@ -355,8 +363,27 @@ extension ViewController: UIPickerViewDataSource {
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         return dataForPicker.count
     }
+}
+
+extension ViewController: UIPickerViewDelegate {
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        let row = dataForPicker[row]
+        return row
+    }
     
-    
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        if dataForPicker[row] == dataForPicker[0] {
+            UIView.AnimationCurve.easeInOut
+        } else if dataForPicker[row] == dataForPicker[1] {
+            UIView.AnimationCurve.easeIn
+        } else if dataForPicker[row] == dataForPicker[2] {
+            UIView.AnimationCurve.easeOut
+        } else if dataForPicker[row] == dataForPicker[3] {
+        UIView.AnimationOptions.transitionFlipFromLeft
+        } else if dataForPicker[row] == dataForPicker[4] {
+        UIView.AnimationOptions.transitionFlipFromRight
+        }
+    }
 }
 
 
